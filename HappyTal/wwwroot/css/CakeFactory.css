@@ -1,0 +1,67 @@
+﻿h4 {
+    font-size: 1.4em;
+}
+h5 {
+    font-size: 1.2em;
+}
+
+#factoryMonitor {
+    width: 90%;
+    max-width: 720px;
+    
+    margin: auto;
+    padding-bottom: 6px;
+
+    border-radius: 6px;
+    box-shadow: 0px 0px 6px #aaa;
+}
+
+#factoryMonitor > * {
+    padding: 8px;
+}
+
+#factoryMonitor > header {
+    padding-top: 10px;
+    text-align: center;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background-color: #eee;
+}
+
+
+.stageBlock {
+    width: 30%;
+    border-radius: 8px;
+    border: solid medium #ddd; 
+    text-align: center;
+}
+
+.stageBlock header {
+    padding: 6px 4px 4px 4px;
+    background: linear-gradient(#e2e2e2, #f2f2f2);
+    border-bottom: solid thin #ddd;
+}
+
+.stageValue {
+    padding: 8px;
+    font-size: 2em;
+    font-family: 'Book Antiqua';
+}
+
+@media all and (max-width: 576px) {
+    #factoryMonitor {
+        width: 100%;
+    }
+
+    h4 {
+        font-size: 1.3em;
+    }
+
+    h5 {
+        font-size: 1.1em;
+    }
+
+    .stageValue {
+        font-size: 1.8em;
+    }
+}

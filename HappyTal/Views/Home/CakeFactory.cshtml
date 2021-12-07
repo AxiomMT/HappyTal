@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Cake Factory";
+}
+
+@section PageStyle { 
+    <link rel="stylesheet" href="~/css/cakeFactory.css" />
+}
+
+@section Scripts { 
+    <script src="~/js/cakeFactory.js"></script>
+}
+
+<section id="factoryMonitor">
+    <header><h4>Monitoring</h4></header>
+    <div id="meterSection" class="d-flex justify-content-around align-items-center mt-2">
+        <section id="preparationMonitor" class="stageBlock">
+            <header><h5>Preparation</h5></header>
+            <aside class="stageValue">0</aside>
+        </section>
+        <section id="cuissonMonitor" class="stageBlock">
+            <header><h5>Cuisson</h5></header>
+            <aside class="stageValue">0</aside>
+        </section>
+        <section id="emballageMonitor" class="stageBlock">
+            <header><h5>Emballage</h5></header>
+            <aside class="stageValue">0</aside>
+        </section>
+    </div>
+    <div id="controlSection" class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-primary mx-1">Start factory</button>
+        <button class="btn btn-danger mx-1">Stop factory</button>
+    </div>
+</section>

@@ -23,6 +23,11 @@ namespace HappyTal.Controllers
             return View();
         }
 
+        public IActionResult CakeFactory()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

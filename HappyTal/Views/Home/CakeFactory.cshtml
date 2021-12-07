@@ -12,7 +12,7 @@
 
 <section id="factoryMonitor">
     <header><h4>Monitoring</h4></header>
-    <div id="meterSection" class="d-flex justify-content-around align-items-center mt-2">
+    <div id="meterSection" class="d-flex justify-content-around align-items-center flex-wrap mt-2">
         <section id="preparationMonitor" class="stageBlock">
             <header><h5>Preparation</h5></header>
             <aside class="stageValue">0</aside>
@@ -25,9 +25,13 @@
             <header><h5>Emballage</h5></header>
             <aside class="stageValue">0</aside>
         </section>
+        <section id="readyMonitor" class="stageBlock">
+            <header><h5>Ready</h5></header>
+            <aside class="stageValue">0</aside>
+        </section>
     </div>
     <div id="controlSection" class="d-flex justify-content-center align-items-center">
-        <button class="btn btn-primary mx-1">Start factory</button>
-        <button class="btn btn-danger mx-1">Stop factory</button>
+        <button id="startBtn" class="btn btn-primary mx-1">Start factory</button>
+        <button id="stopBtn" class="btn btn-danger mx-1">Stop factory</button>
     </div>
 </section>

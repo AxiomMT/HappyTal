@@ -21,7 +21,10 @@ namespace HappyTal.Models
         public List<Cake> CakesToPrepare, CakesToBake, CakesToPack;     // Queue lists of cakes waiting for their corresopnding stage
 
         // "Real-time" counting the number of Cakes going through each step
-        public int PreparationNumber, CuissonNumber, EmballageNumber, ReadyNumber;
+        public int PreparationNumber { get; set; }
+        public int CuissonNumber { get; set; } 
+        public int EmballageNumber { get; set; } 
+        public int ReadyNumber { get; set; }
 
         // To prevent undesired parallel stages side-effect when handling the Cakes lists, we add an enum condition. 
         // e.g: The CakesToBake are both filled during the Preparing stage and emptied in the Baking stage. We help this from happening "at the same time" 

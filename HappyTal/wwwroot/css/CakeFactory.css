@@ -34,12 +34,21 @@ h5 {
     border-radius: 8px;
     border: solid medium #ddd; 
     text-align: center;
+
+    margin-bottom: 8px;
 }
 
 .stageBlock header {
     padding: 6px 4px 4px 4px;
     background: linear-gradient(#e2e2e2, #f2f2f2);
     border-bottom: solid thin #ddd;
+}
+
+#readyMonitor header {
+    background: unset;
+    background-color: lightgreen;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }
 
 .stageValue {

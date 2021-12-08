@@ -11,10 +11,10 @@ namespace HappyTal.Models
 
         #region Properties
         //------ Duration properties
-        int PrepareLowDurationBound = 5;
-        int PrepareTopDurationBound = 8;
-        int CuissonDuration = 10;
-        int EmballageDuration = 2;
+        public int PrepareLowDurationBound = 5;
+        public int PrepareTopDurationBound = 8;
+        public int CuissonDuration = 10;
+        public int EmballageDuration = 2;
 
         public State State { get; set; }
         #endregion

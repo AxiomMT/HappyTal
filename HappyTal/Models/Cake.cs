@@ -10,11 +10,11 @@ namespace HappyTal.Models
         // N.B: We consider each cake making stage (Preparation, Cuisson, Emballage) as an individual task that can be awaited.
 
         #region Properties
-        //------ Duration properties
-        public int PrepareLowDurationBound = 5;
-        public int PrepareTopDurationBound = 8;
-        public int CuissonDuration = 10;
-        public int EmballageDuration = 2;
+        //------ Duration properties (made static to change them in unit tests)
+        public static int PrepareLowDurationBound = 5;
+        public static int PrepareTopDurationBound = 8;
+        public static int CuissonDuration = 10;
+        public static int EmballageDuration = 2;
 
         public State State { get; set; }
         #endregion

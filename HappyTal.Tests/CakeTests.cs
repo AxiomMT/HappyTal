@@ -21,10 +21,10 @@ namespace HappyTal.Tests
         {
             cake = new Cake(prepLowBound, prepTopBound, cuissonDuration, embDuration);
 
-            Assert.AreEqual(prepLowBound, cake.PrepareLowDurationBound);
-            Assert.AreEqual(prepTopBound, cake.PrepareTopDurationBound);
-            Assert.AreEqual(cuissonDuration, cake.CuissonDuration);
-            Assert.AreEqual(embDuration, cake.EmballageDuration);
+            Assert.AreEqual(prepLowBound, Cake.PrepareLowDurationBound);
+            Assert.AreEqual(prepTopBound, Cake.PrepareTopDurationBound);
+            Assert.AreEqual(cuissonDuration, Cake.CuissonDuration);
+            Assert.AreEqual(embDuration, Cake.EmballageDuration);
         }
 
         [TestMethod]

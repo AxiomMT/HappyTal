@@ -25,38 +25,67 @@ namespace HappyTal.Models
         /// Prepares the cake (first stage)
         /// </summary>
         /// <returns>A task that can be awaited</returns>
-        public async Task PreparationAsync()
+        public async Task<State> PreparationAsync()
+        {
+            return await Task.Run(() => Preparation());
+        }
+
+        /// <summary>
+        /// Preparation Stage
+        /// </summary>
+        /// <returns>The State of the Cake that went through the stage</returns>
+        private State Preparation()
         {
             int lowDurationBound = 5;
             int topDurationBound = 8;
             int randomDuration = new Random().Next(lowDurationBound, topDurationBound + 1);     // The MaxValue parameter is exclusive
-
-            await Task.Delay(TimeSpan.FromSeconds(randomDuration));
+            Task.Delay(TimeSpan.FromSeconds(randomDuration)).Wait();
             State = State.Prepared;
+            return State;
         }
 
         /// <summary>
         /// Bakes the cake
         /// </summary>
         /// <returns>A task that can be awaited</returns>
-        public async Task CuissonAsync()
+        public async Task<State> CuissonAsync()
+        {
+            return await Task.Run(() => Cuisson());
+        }
+
+        /// <summary>
+        /// Cuisson Stage
+        /// </summary>
+        /// <returns>The State of the Cake that went through the stage</returns>
+        private State Cuisson()
         {
             int duration = 10;
 
-            await Task.Delay(TimeSpan.FromSeconds(duration));
+            Task.Delay(TimeSpan.FromSeconds(duration)).Wait();
             State = State.Baked;
+            return State;
         }
 
         /// <summary>
         /// Packs the cake
         /// </summary>
         /// <returns>A task that can be awaited</returns>
-        public async Task EmballageAsync()
+        public async Task<State> EmballageAsync()
+        {
+            return await Task.Run(() => Emballage());
+        }
+
+        /// <summary>
+        /// Emballage Stage
+        /// </summary>
+        /// <returns>The State of the Cake that went through the stage</returns>
+        private State Emballage()
         {
             int duration = 2;
 
-            await Task.Delay(TimeSpan.FromSeconds(duration));
+            Task.Delay(TimeSpan.FromSeconds(duration)).Wait();
             State = State.Packed;
+            return State;
         }
         #endregion
     }

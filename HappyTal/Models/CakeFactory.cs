@@ -18,19 +18,13 @@ namespace HappyTal.Models
         private CancellationTokenSource prepaToken, cuissonToken, embToken;
         private StageState prepaState, cuissonState, embState;
 
-        public List<Cake> CakesToPrepare, CakesToBake, CakesToPack;     // Queue lists of cakes waiting for their corresopnding stage
+        public List<Cake> Cakes;                    
 
         // "Real-time" counting the number of Cakes going through each step
         public int PreparationNumber { get; set; }
         public int CuissonNumber { get; set; } 
         public int EmballageNumber { get; set; } 
         public int ReadyNumber { get; set; }
-
-        // To prevent undesired parallel stages side-effect when handling the Cakes lists, we add an enum condition. 
-        // e.g: The CakesToBake are both filled during the Preparing stage and emptied in the Baking stage. We help this from happening "at the same time" 
-        private Stage allowedStage;
-
-        public bool IsStarted = false; // True when the first stage process really starts. Triggered by the display features.
 
         #endregion
 
@@ -40,9 +34,7 @@ namespace HappyTal.Models
         /// </summary>
         public CakeFactory()
         {
-            CakesToPrepare = new List<Cake>();
-            CakesToBake = new List<Cake>();
-            CakesToPack = new List<Cake>();
+            Cakes = new List<Cake>();
 
             prepaToken = new CancellationTokenSource();
             cuissonToken = new CancellationTokenSource();
@@ -53,8 +45,6 @@ namespace HappyTal.Models
             embTask = new Task(() => Emballage(), embToken.Token);
 
             PreparationNumber = CuissonNumber = EmballageNumber = ReadyNumber = 0;
-
-            allowedStage = Stage.Preparation;
         }
         #endregion
 
@@ -100,28 +90,23 @@ namespace HappyTal.Models
             List<Task> preparationTasks;
             while (prepaState == StageState.Running)
             {
-                if (allowedStage == Stage.Preparation)
+                preparationTasks = new List<Task>();
+
+                // Filling the CakesToPrepare list with the allowed number of cakes
+                for (int i = 0; i < maxSimultaneousPreparation; i++)
                 {
-                    preparationTasks = new List<Task>();
-
-                    // Filling the CakesToPrepare list with the allowed number of cakes
-                    for (int i = 0; i < maxSimultaneousPreparation; i++) CakesToPrepare.Add(new Cake());
-                    foreach (Cake cake in CakesToPrepare)
-                    {
-                        preparationTasks.Add(cake.PreparationAsync());
-                        PreparationNumber++;
-                    }
-
-                    if (!IsStarted) IsStarted = true;
-
-                    CakesToBake.AddRange(CakesToPrepare);
-                    allowedStage = Stage.Cuisson;
-
-                    Task.WaitAll(preparationTasks.ToArray());
-
-                    CakesToPrepare.Clear();
-                    PreparationNumber -= preparationTasks.Count;
+                    Cakes.Add(new Cake());
                 }
+
+                IEnumerable<Cake> prepaCakes = Cakes.Where(c => c.State == State.Born).ToList();        // queue list of the cakes to prepare
+                foreach (Cake cake in prepaCakes)
+                {
+                    preparationTasks.Add(cake.PreparationAsync());
+                    PreparationNumber++;
+                }
+                Task.WaitAll(preparationTasks.ToArray());
+
+                PreparationNumber -= preparationTasks.Count;
             }
         }
 
@@ -133,23 +118,16 @@ namespace HappyTal.Models
             List<Task> cuissonTasks;
             while (cuissonState == StageState.Running)
             {
-                if (allowedStage == Stage.Cuisson)
+                cuissonTasks = new List<Task>();
+                IEnumerable<Cake> cuissonCakes = Cakes.Where(c => c.State == State.Prepared).ToList();  // queue list of the cakes to bake
+                foreach (Cake cake in cuissonCakes.Take(maxSimultaneousCuisson))                        // limiting baking to the maximum allowed
                 {
-                    cuissonTasks = new List<Task>();
-                    foreach (Cake cake in CakesToBake.Take(maxSimultaneousCuisson))
-                    {
-                        cuissonTasks.Add(cake.CuissonAsync());
-                        CuissonNumber++;
-                    }
-
-                    CakesToPack = CakesToBake.Take(cuissonTasks.Count).ToList();
-                    allowedStage = Stage.Emballage;
-
-                    Task.WaitAll(cuissonTasks.ToArray());
-
-                    CakesToBake = CakesToBake.Skip(cuissonTasks.Count).ToList();
-                    CuissonNumber -= cuissonTasks.Count;
+                    cuissonTasks.Add(cake.CuissonAsync());
+                    CuissonNumber++;
                 }
+                Task.WaitAll(cuissonTasks.ToArray());
+
+                CuissonNumber -= cuissonTasks.Count;
             }
         }
 
@@ -161,23 +139,17 @@ namespace HappyTal.Models
             List<Task> embTasks;
             while (embState == StageState.Running)
             {
-                if (allowedStage == Stage.Emballage)
+                embTasks = new List<Task>();
+                IEnumerable<Cake> embCakes = Cakes.Where(c => c.State == State.Baked).ToList();         // queue list of the cakes to bake
+                foreach (Cake cake in embCakes.Take(maxSimultaneousEmballage))                          // limiting packing to the maximum allowed
                 {
-                    embTasks = new List<Task>();
-                    foreach (Cake cake in CakesToPack.Take(maxSimultaneousEmballage))
-                    {
-                        embTasks.Add(cake.EmballageAsync());
-                        EmballageNumber++;
-                    }
-
-                    CakesToPack = CakesToPack.Skip(embTasks.Count).ToList();
-                    allowedStage = Stage.Preparation;
-
-                    Task.WaitAll(embTasks.ToArray());
-
-                    ReadyNumber += EmballageNumber;
-                    EmballageNumber -= embTasks.Count;
+                    embTasks.Add(cake.EmballageAsync());
+                    EmballageNumber++;
                 }
+                Task.WaitAll(embTasks.ToArray());
+
+                ReadyNumber += EmballageNumber;
+                EmballageNumber -= embTasks.Count;
             }
         }
         #endregion

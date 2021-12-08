@@ -10,6 +10,12 @@ namespace HappyTal.Models
         // N.B: We consider each cake making stage (Preparation, Cuisson, Emballage) as an individual task that can be awaited.
 
         #region Properties
+        //------ Duration properties
+        int PrepareLowDurationBound = 5;
+        int PrepareTopDurationBound = 8;
+        int CuissonDuration = 10;
+        int EmballageDuration = 2;
+
         public State State { get; set; }
         #endregion
 
@@ -17,6 +23,14 @@ namespace HappyTal.Models
         public Cake()
         {
             State = State.Born;
+        }
+
+        public Cake(int prepareLowDurationBound, int prepareTopDurationBound, int cuissonDuration, int emballageDuration) : this()
+        {
+            PrepareLowDurationBound = prepareLowDurationBound;
+            PrepareTopDurationBound = prepareTopDurationBound;
+            CuissonDuration = cuissonDuration;
+            EmballageDuration = emballageDuration;
         }
         #endregion
 
@@ -36,9 +50,7 @@ namespace HappyTal.Models
         /// <returns>The State of the Cake that went through the stage</returns>
         private State Preparation()
         {
-            int lowDurationBound = 5;
-            int topDurationBound = 8;
-            int randomDuration = new Random().Next(lowDurationBound, topDurationBound + 1);     // The MaxValue parameter is exclusive
+            int randomDuration = new Random().Next(PrepareLowDurationBound, PrepareTopDurationBound + 1);     // The MaxValue parameter is exclusive
             Task.Delay(TimeSpan.FromSeconds(randomDuration)).Wait();
             State = State.Prepared;
             return State;
@@ -59,9 +71,7 @@ namespace HappyTal.Models
         /// <returns>The State of the Cake that went through the stage</returns>
         private State Cuisson()
         {
-            int duration = 10;
-
-            Task.Delay(TimeSpan.FromSeconds(duration)).Wait();
+            Task.Delay(TimeSpan.FromSeconds(CuissonDuration)).Wait();
             State = State.Baked;
             return State;
         }
@@ -81,9 +91,7 @@ namespace HappyTal.Models
         /// <returns>The State of the Cake that went through the stage</returns>
         private State Emballage()
         {
-            int duration = 2;
-
-            Task.Delay(TimeSpan.FromSeconds(duration)).Wait();
+            Task.Delay(TimeSpan.FromSeconds(EmballageDuration)).Wait();
             State = State.Packed;
             return State;
         }

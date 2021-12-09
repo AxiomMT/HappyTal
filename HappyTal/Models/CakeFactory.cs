@@ -90,15 +90,19 @@ namespace HappyTal.Models
             List<Task> preparationTasks;
             while (prepaState == StageState.Running)
             {
+                IEnumerable<Cake> prepaCakes;
                 preparationTasks = new List<Task>();
 
                 // Filling the CakesToPrepare list with the allowed number of cakes
-                for (int i = 0; i < maxSimultaneousPreparation; i++)
+                lock (Cakes)                                                                // allowing only one access at a time
                 {
-                    Cakes.Add(new Cake());
+                    for (int i = 0; i < maxSimultaneousPreparation; i++)
+                    {
+                        Cakes.Add(new Cake());
+                    } 
+                    prepaCakes = Cakes.Where(c => c.State == State.Born).ToList();          // queue list of the cakes to prepare
                 }
 
-                IEnumerable<Cake> prepaCakes = Cakes.Where(c => c.State == State.Born).ToList();        // queue list of the cakes to prepare
                 foreach (Cake cake in prepaCakes)
                 {
                     preparationTasks.Add(cake.PreparationAsync());
@@ -115,12 +119,16 @@ namespace HappyTal.Models
         /// </summary>
         private void Cuisson()
         {
+            IEnumerable<Cake> cuissonCakes;
             List<Task> cuissonTasks;
             while (cuissonState == StageState.Running)
             {
                 cuissonTasks = new List<Task>();
-                IEnumerable<Cake> cuissonCakes = Cakes.Where(c => c.State == State.Prepared).ToList();  // queue list of the cakes to bake
-                foreach (Cake cake in cuissonCakes.Take(maxSimultaneousCuisson))                        // limiting baking to the maximum allowed
+                lock (Cakes)                                                                // allowing only one access at a time
+                {
+                    cuissonCakes = Cakes.Where(c => c.State == State.Prepared).ToList();    // queue list of the cakes to bake 
+                }
+                foreach (Cake cake in cuissonCakes.Take(maxSimultaneousCuisson))            // limiting baking to the maximum allowed
                 {
                     cuissonTasks.Add(cake.CuissonAsync());
                     CuissonNumber++;
@@ -139,9 +147,13 @@ namespace HappyTal.Models
             List<Task> embTasks;
             while (embState == StageState.Running)
             {
+                IEnumerable<Cake> embCakes;
                 embTasks = new List<Task>();
-                IEnumerable<Cake> embCakes = Cakes.Where(c => c.State == State.Baked).ToList();         // queue list of the cakes to bake
-                foreach (Cake cake in embCakes.Take(maxSimultaneousEmballage))                          // limiting packing to the maximum allowed
+                lock (Cakes)                                                                // allowing only one access at a time
+                {
+                    embCakes = Cakes.Where(c => c.State == State.Baked).ToList();           // queue list of the cakes to bake 
+                }
+                foreach (Cake cake in embCakes.Take(maxSimultaneousEmballage))               // limiting packing to the maximum allowed
                 {
                     embTasks.Add(cake.EmballageAsync());
                     EmballageNumber++;

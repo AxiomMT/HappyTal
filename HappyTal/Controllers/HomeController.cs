@@ -57,6 +57,7 @@ namespace HappyTal.Controllers
                     CakeFactory factory = new CakeFactory();
                     factoryDictionary.Add(sessionId, factory);
                 }
+                else factoryDictionary[sessionId] = new CakeFactory();
 
                 factoryDictionary[sessionId].Run();
                 return new JsonResult(null);

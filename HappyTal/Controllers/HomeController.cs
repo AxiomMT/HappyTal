@@ -49,15 +49,23 @@ namespace HappyTal.Controllers
         /// <returns></returns>
         public IActionResult StartFactory()
         {
-            string sessionId = HttpContext.Session.Id;
-            if (!factoryDictionary.ContainsKey(sessionId))
+            try
             {
-                CakeFactory factory = new CakeFactory();
-                factoryDictionary.Add(sessionId, factory);
-            }
+                string sessionId = HttpContext.Session.Id;
+                if (!factoryDictionary.ContainsKey(sessionId))
+                {
+                    CakeFactory factory = new CakeFactory();
+                    factoryDictionary.Add(sessionId, factory);
+                }
 
-            factoryDictionary[sessionId].Run();
-            return new JsonResult(null);
+                factoryDictionary[sessionId].Run();
+                return new JsonResult(null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error of type {ex.GetType()} occured during the Stop process:\n {ex.Message}");
+                return new JsonResult(null);
+            }
         }
 
         /// <summary>
@@ -66,9 +74,17 @@ namespace HappyTal.Controllers
         /// <returns></returns>
         public IActionResult StopFactory()
         {
-            string sessionId = HttpContext.Session.Id;
-            factoryDictionary[sessionId].Stop();
-            return new JsonResult(null);
+            try
+            {
+                string sessionId = HttpContext.Session.Id;
+                factoryDictionary[sessionId].Stop();
+                return new JsonResult(null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error of type {ex.GetType()} occured during the Stop process:\n {ex.Message}");
+                return new JsonResult(null);
+            }
         }
 
         /// <summary>
@@ -77,9 +93,17 @@ namespace HappyTal.Controllers
         /// <returns>A JSON serialized object containing the expected data</returns>
         public IActionResult GetFactoryDataMS()
         {
-            string sessionId = HttpContext.Session.Id;
-            CakeFactory factory = factoryDictionary[sessionId];           
-            return Json(factory);
+            try
+            {
+                string sessionId = HttpContext.Session.Id;
+                CakeFactory factory = factoryDictionary[sessionId];
+                return Json(factory);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error of type {ex.GetType()} occured during the Factory Data reading process:\n {ex.Message}");
+                return new JsonResult(null);
+            }
         }
     }
 }

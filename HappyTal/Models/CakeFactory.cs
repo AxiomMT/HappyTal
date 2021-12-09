@@ -82,10 +82,13 @@ namespace HappyTal.Models
             embToken.Dispose();
         }
 
+        //------------------------------- Individual factory stages ---------------------------------\\
+        // N.B: We set their accessibility public for unit testing purpose
+
         /// <summary>
         /// Prepares the Cakes
         /// </summary>
-        private void Preparation()
+        public void Preparation()
         {
             List<Task> preparationTasks;
             while (prepaState == StageState.Running)
@@ -107,7 +110,7 @@ namespace HappyTal.Models
                 {
                     preparationTasks.Add(cake.PreparationAsync());
                     PreparationNumber++;
-                }
+                } 
                 Task.WaitAll(preparationTasks.ToArray());
 
                 PreparationNumber -= preparationTasks.Count;
@@ -117,11 +120,11 @@ namespace HappyTal.Models
         /// <summary>
         /// Bakes the Cakes
         /// </summary>
-        private void Cuisson()
+        public void Cuisson()
         {
             IEnumerable<Cake> cuissonCakes;
             List<Task> cuissonTasks;
-            while (cuissonState == StageState.Running)
+            while (cuissonState == StageState.Running && Cakes.Count > 0)
             {
                 cuissonTasks = new List<Task>();
                 lock (Cakes)                                                                // allowing only one access at a time
@@ -142,10 +145,10 @@ namespace HappyTal.Models
         /// <summary>
         /// Packs the Cakes
         /// </summary>
-        private void Emballage()
+        public void Emballage()
         {
             List<Task> embTasks;
-            while (embState == StageState.Running)
+            while (embState == StageState.Running && Cakes.Count > 0)
             {
                 IEnumerable<Cake> embCakes;
                 embTasks = new List<Task>();
